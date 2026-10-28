@@ -1,0 +1,3 @@
+exports[`makes stats variable file for page use 1`] = `
+"const stats = {\\"numberOfReadings\\":11,\\"minCps\\":0.8,\\"maxCps\\":12.4,\\"sumOfReadings\\":38.2,\\"firstTimestamp\\":\\"2026-10-24T17:15:00Z\\",\\"lastTimestamp\\":\\"2026-10-24T17:15:10Z\\"};"
+`;
