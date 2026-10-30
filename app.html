@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiation Viewer</title>
+    <style>
+        :root {
+            --primary-color: #0076c0;
+            --primary-border: 1px solid #0076c0;
+        }
+        h1 {
+            text-align: center;
+        }
+        body {
+            color: var(--primary-color);
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        .content {
+            max-width: 300px;
+            margin: auto;
+        }
+        .statItems {
+            border: var(--primary-border);
+            /* single stat items already have a bottom border */
+            border-bottom: none;
+        }
+        .statItem {
+            display: flex;
+            border-bottom: var(--primary-border);
+        }
+        .statItem:nth-child(even) {
+            color: #fff;
+            background-color: var(--primary-color);
+        }
+        .statItem .label {
+            padding: 0 4px;
+            margin-right: 4px;
+        }
+        #visualization div {
+            border: var(--primary-border);
+        }
+    </style>
+</head>
+<body>
+    <!-- New reading will be submitted every second. -->
+    <div class="content">
+        <h1>Counts Per Second</h1>
+        <div class="statItems">
+            <div class="statItem">
+                <div class="label">Total:</div>
+                <div id="numberOfReadings"></div>
+            </div>
+            <div class="statItem">
+                <div class="label">Min:</div>
+                <div id="minCps"></div>
+            </div>
+            <div class="statItem">
+                <div class="label">Max:</div>
+                <div id="maxCps"></div>
+            </div>
+            <div class="statItem">
+                <div class="label">Sum:</div>
+                <div id="sumOfReadings"></div>
+            </div>
+            <div class="statItem">
+                <div class="label">First at </div>
+                <div id="firstTimestamp"></div>
+            </div>
+            <div class="statItem">
+                <div class="label">Last at </div>
+                <div id="lastTimestamp"></div>
+            </div>
+        </div>
+        <div id="visualization"></div>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        // const or let, doesn't matter here technically; it's an object.
+        let data = [1.2,0.8,1.5,2.1,1.1,4.7,12.4,8.9,3.2,1.4,0.9];
+
+        // helper functions
+        const demoReader = () => data.splice(0,1)[0];
+        const timestamp = () => new Date().toISOString().split('.')[0] + 'Z';
+        const oneSecond = second => new Promise(resolve => setTimeout(resolve, 1000));
+
+        // initialize variables
+        let stats = {
+            numberOfReadings: null,
+            minCps: null,
+            maxCps: null,
+            sumOfReadings: null,
+            firstTimestamp: "",
+            lastTimestamp: ""
+        };
+
+        let reading;
+
+        const calcStats = async () => {
+            reading = await demoReader();
+            stats.firstTimestamp = timestamp();
+            stats.minCps = reading;
+
+            // coerce into boolean, stop program when there's no more readings
+            while (!!reading) {
+                      
+                stats.lastTimestamp = timestamp();          
+                stats.numberOfReadings++;
+                stats.sumOfReadings += reading;
+
+                // JS is really bad at math, this wouldn't be here if it was C++
+                stats.sumOfReadings = Math.round(stats.sumOfReadings*10)/10
+
+                if (reading < stats.minCps) stats.minCps = reading;
+                else if (reading > stats.maxCps) stats.maxCps = reading;
+
+                await oneSecond()
+                for (stat in stats) document.getElementById(stat).textContent = stats[stat];
+                visualization.innerHTML += `<div style="width:${(reading/20)*100}%"></div>`;
+
+                reading = await demoReader();
+            }
+
+            message.textContent = "Demo complete!"
+        }
+
+        calcStats();
+    </script>
+</body>
+</html>
