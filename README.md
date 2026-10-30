@@ -5,6 +5,20 @@ I'm not familiar with radiation data, so I asked Gemini AI to generate an array 
 
 ![Demo CPS Stats Screenshot](img/demoScreenshot.png)
 
+## View app.html for demo
+
+During my technical interview, I received feedback on my code and realized I had made several assumptions about how the device would work. It was helpful to clarify some of my questions and better understand the actual requirements.
+
+Initially, I assumed the raw data needed to be stored. After seeing the device in action, I quickly realized that a database wasn't necessary for this project. The goal was simply to display statistics as the data comes in, rather than persist historical readings.
+
+My original implementation saved incoming readings to a CSV file and then calculated statistics from those stored records. I reworked the approach so that statistics are now calculated as each reading arrives and maintained temporarily in memory.
+
+I'm still using the same dummy data, but I've implemented a one-second buffer to simulate the actual device's data stream. The page now updates automatically without requiring a manual refresh.
+
+I also added a small graph to visualize the incoming readings and make it easier to see changes in radiation levels.
+
+How to view demo: `start .\app.html`
+
 ## Commands
 
 ### Add CPS reading
